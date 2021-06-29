@@ -30,8 +30,9 @@ class _HomePageState extends State<HomePage> {
     seccionBloc.cargarSeccion();//ejecutamos el metodo para cargar las secciones
 
     return Scaffold(// scaffold es el lienzo principal donde se dibujan los Widgets
+      drawer: _menuLateral(context, usuario),
       appBar: AppBar( // es un menu superior que podemos ver en la pantalla. en el se define el titulo y otros botones que nos daran otras funcionalidades
-        leading: utils.boton(usuario.rol, context), // definimos un boton en la esquina superior izquierda del appbar. el boton crea al ejecutar el metodo "boton" del archivo utils
+        //leading: utils.boton(usuario.rol, context), // definimos un boton en la esquina superior izquierda del appbar. el boton crea al ejecutar el metodo "boton" del archivo utils
         centerTitle: true,// centramos el titulo
         title: Text('Catalogo de secciones'), // Especificamos el titulo que tendra esta pantalla
         actions: [ // widgets que se agrupan a la esquina superior derecha del appbar.
@@ -40,11 +41,68 @@ class _HomePageState extends State<HomePage> {
           }),
         ]
       ),
-      body: _body(tamano, usuario.rol), // metodo que continua con la creacion del body
+      body: _body(tamano, usuario.rol, usuario), // metodo que continua con la creacion del body
       floatingActionButton: _agregarSecc(usuario.rol) // metodo que crea un boton flotante en la esquina inferior derecha de la pantalla.
     );
   }
   
+  Widget _menuLateral(BuildContext context, UsuarioModel usuario) {
+    
+    final tamano = TextStyle(fontSize: 15.0);
+
+      return Drawer(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              DrawerHeader(
+                child: Container(),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage('imagenes/salfa.png')
+                  )
+                )
+              ),
+              Text('Menu', style: TextStyle(fontSize: 20.0)),
+              SizedBox(height: 30.0),
+              _adminusuario(usuario, tamano),
+              _stockCritico(usuario, tamano),
+              ListTile(
+                title: Text('Cerrar sesion', style: tamano),
+                onTap: () => Navigator.pushReplacementNamed(context, 'iniciarSesion')
+              ), 
+            ],
+          ),
+        ),
+      );
+
+  }
+
+  Widget _adminusuario(UsuarioModel usuario, TextStyle tamano) {
+
+    if(usuario.rol == "ADMIN") {
+      return ListTile(
+        title: Text('Administrar usuario', style: tamano),
+        onTap: () => Navigator.pushNamed(context, 'lista_users'),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _stockCritico(UsuarioModel usuario, TextStyle tamano) {
+
+    if(usuario.rol == "ADMIN" || usuario.rol == "BODEGUERO") {
+      return ListTile(
+        title: Text('Stock Critico', style: tamano),
+        onTap: () => Navigator.pushNamed(context, 'stock_critico', arguments: usuario),
+      );
+    } else {
+      return Container();
+    }
+
+  }
+
   Widget _agregarSecc(String rol) { // metodo que crea o no el boton dependiendo del rol del usuario que se logeo
 
     if(rol == 'ADMIN' || rol == 'BODEGUERO') { // si el rol del usuario es "ADMIN" o "BODEGUERO" dispara el return del boton
@@ -58,7 +116,7 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  Widget _body(Size tamano, String rol) { // metodo que dibuja el body
+  Widget _body(Size tamano, String rol, UsuarioModel usuario) { // metodo que dibuja el body
 
     return StreamBuilder( // return del metodo. Un streamBuilder sirve para ir cargando datos a medida que se van añadiendo. el sistema nota los cambios y los carga
       stream: seccionBloc.seccionStream, // aqui se selecciona el "rio" (stream) que hara fluir su informacion por aqui
@@ -72,7 +130,7 @@ class _HomePageState extends State<HomePage> {
             child: ListView.builder( // Widget que se dibujara en la pantalla y que tendra la opcion de ser refrescado
               itemCount: seccion.length, // cuenta la cantidad de secciones cargadas
               itemBuilder: (BuildContext context, int i) // propiedad que debe estar para dibujar los widget que queremos dentro del "ListView.Builder" 
-              => _seccion(context ,seccion[i], rol), // metodo que crea los elementos del ListView.builder
+              => _seccion(context ,seccion[i], rol, usuario), // metodo que crea los elementos del ListView.builder
             )
           );
           
@@ -86,14 +144,14 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  Widget _seccion(BuildContext context, SeccionModel seccion, String rol) { // metodo que dibujara los elementos dentro del ListView.builder
+  Widget _seccion(BuildContext context, SeccionModel seccion, String rol, UsuarioModel usuario) { // metodo que dibujara los elementos dentro del ListView.builder
 
     return Card( // retorno del metodo, dibujara una carta
       child: Column( // dentro de la carta, se almaceran los datos como columna
         children: [ // propiedad del widget Column
           ListTile(// primer hijo. otro tipo de lista
             title: Text('${seccion.nombre}'), // el titulo del ListTile sera el nombre de cada seccion
-              onTap: () =>Navigator.pushNamed(context, 'productos', arguments: [seccion, rol]), // al presionar la lista nos mandara a la pantalla con string de nombre "productos" y los argumentos que enviara son la seccion a la cual presionamos mas el rol del usuario.
+              onTap: () =>Navigator.pushNamed(context, 'productos', arguments: [seccion, rol, usuario]), // al presionar la lista nos mandara a la pantalla con string de nombre "productos" y los argumentos que enviara son la seccion a la cual presionamos mas el rol del usuario.
           ),
         ],
       ),

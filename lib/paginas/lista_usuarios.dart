@@ -26,7 +26,7 @@ class _ListaUserPageState extends State<ListaUserPage> {
     return Scaffold(// scaffold es el lienzo principal donde se dibujan los Widgets
       appBar: AppBar(// es un menu superior que podemos ver en la pantalla. en el se define el titulo y otros botones que nos daran otras funcionalidades
         centerTitle: true,// centramos el titulo
-        title: Text('Lista de usuarios'),// Especificamos el titulo que tendra esta pantalla
+        title: Text('Lista de usuarios'),// Especificamos el titulo que tendra esta pantalla   
       ),
       body: _body(), // metodo que definira la creacion del body
       floatingActionButton: FloatingActionButton( // creacion de un boton flotante en la esquina inferior derecha de la pantalla

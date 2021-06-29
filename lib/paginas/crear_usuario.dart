@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vision_one/bloc/usuario_bloc.dart';
+import 'package:vision_one/modelo/bodega_model.dart';
 import 'package:vision_one/modelo/usuario_model.dart';
+import 'package:vision_one/provider/bodega_provider.dart';
 import 'package:vision_one/provider/usuario_provider.dart';
 
 import 'package:vision_one/utils/utils.dart' as utils;
@@ -31,7 +33,11 @@ class _CrearUsuarioPageState extends State<CrearUsuarioPage> {
   UsuarioProvider usuarioProvider = new UsuarioProvider();//creamos una nueva instancia de la clase UsuarioProvider
   UsuarioBloc usuarioBloc = new UsuarioBloc();//creamos una nueva instancia de la clase UsuarioBloc
 
+  BodegaProvider bodegaProvider = new BodegaProvider();
+
   List<String> roles = ["VENDEDOR", "BODEGUERO", "ADMIN"]; // creamos una lista String con 3 valores
+  //List<String> bodegas = 
+  bool _bloquearCombo = true;
 
   @override 
   Widget build(BuildContext context) {//el metodo build es el encargado de dibujar los widgets en la pantalla, por eso debe regresar un widget a fuerza
@@ -67,7 +73,12 @@ class _CrearUsuarioPageState extends State<CrearUsuarioPage> {
         Text('Rol', style: fuente), //Texto desplegado en pantalla
         SizedBox(height: tamano.height * 0.03), //Espacio en blanco entre un widget y otro, en este caso es un espacio vertical al definir la propiedad height. ocupara el 3%
         _rol(tamano),// metodo que define la creacion del input del rol
-        SizedBox(height: tamano.height * 0.1), //Espacio en blanco entre un widget y otro, en este caso es un espacio vertical al definir la propiedad height. ocupara el 1%
+        SizedBox(height: tamano.height * 0.1), //Espacio en blanco entre un widget y otro, en este caso es un espacio vertical al definir la propiedad height. ocupara el 10%
+        Text('Bodega', style: fuente),
+        Text('*solo si el rol es bodeguero*', style: TextStyle(fontSize: 14.0)),
+        SizedBox(height: tamano.height * 0.03),
+        _bodega(tamano),
+        SizedBox(height: tamano.height * 0.1), //Espacio en blanco entre un widget y otro, en este caso es un espacio vertical al definir la propiedad height. ocupara el 10%
         _boton(tamano)
       ],
     );
@@ -121,8 +132,11 @@ class _CrearUsuarioPageState extends State<CrearUsuarioPage> {
         value: '${roles[0]}', // el valor inicial que tomara sera el primero de la lista creada
         items: utils.opcionesRol(roles), // creamos los distintos items que tendra el combobox ejecutando el metodo opcionesRol en el archivo utils. debemos enviarle la lista de roles
         onChanged: (opt) { // propiedad que da la opcion de ir cambiando el valor que se selecciona en el combobox
-          setState(() { // actualiza la pantalla a medida que se encuentran cambios
+          setState(() {// actualiza la pantalla a medida que se encuentran cambios
+            if(opt == "BODEGUERO") {
+              _bloquearCombo = false;
             _rol = opt; // iguala el valor elegido a la variable
+            } 
           });
         },
         onSaved: (opt) {
@@ -130,6 +144,42 @@ class _CrearUsuarioPageState extends State<CrearUsuarioPage> {
         } 
       ),
     );    
+
+  }
+
+  Widget _bodega(Size tamano) {
+
+    String _bodega;
+
+    return FutureBuilder(
+      future: bodegaProvider.cargarBodega(),
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        
+        if(snapshot.hasData) {
+
+        final bodegas = snapshot.data;
+
+        return Container(
+          width: tamano.width *0.7,
+            child: DropdownButtonFormField(
+              value: '${bodegas[0]}',
+              items: utils.opcionesBodega(bodegas),
+              onChanged: (opt) {
+                setState(() {
+                  _bodega = opt;
+                });
+              },
+              onSaved: (opt) {
+                usuarioModel.bodega = opt;
+              },
+            ),
+        );
+
+        } else {
+          return Container();
+        }
+      },
+    );
 
   }
 

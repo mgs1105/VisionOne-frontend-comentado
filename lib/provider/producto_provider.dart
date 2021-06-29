@@ -25,6 +25,7 @@ class ProductoProvider{
   
   //el metodo a su vez debe recibir el ID de la seccion para poder cargar solo los productos asociados a esa seccion.
   //la variable "idseccion" se usa mas adelante.
+
   Future<List<ProductoModel>> cargarProducto(int idseccion) async {    
     final url = '$_dominio/producto';  //creamos una variable que tendra todo el url donde hacer la peticion
     //creamos una variable que ESPERARA(await) la respuesta de la peticion. En la funcion get debemos mandar un Uri (Uniform Resource Locator)
@@ -45,7 +46,6 @@ class ProductoProvider{
     });
     return lista;  //regresa la lista con toda la informacion.
   }
-
   //Creamos un metodo void.El metodo recibe un producto para su creacion.
   void crearProducto(ProductoModel producto) async {
     //creamos una variable que tendra todo el url donde hacer la peticion
@@ -137,5 +137,59 @@ class ProductoProvider{
 
   }
 
+  Future<List<ProductoModel>> stockCritico(String bodega) async {
+
+    final url = '$_dominio/producto';
+    final resp = await http.get(Uri.parse(url));
+    final data = json.decode(resp.body);
+
+    final List<ProductoModel> lista = [];
+
+    if(data == null) return [];
+    
+    data.forEach((value) {
+      
+      if(bodega == null) {
+
+      final producto = ProductoModel.jsonBodegaA(value);
+      final productoB = ProductoModel.jsonBodegaB(value);
+      final productoC = ProductoModel.jsonBodegaC(value);
+
+      producto.diferencia = producto.arrendador - producto.stockCritico;
+      productoB.diferencia = productoB.servicioliviano - productoB.stockCritico;
+      productoC.diferencia = productoC.serviciopesado - productoC.stockCritico;
+
+      lista.add(producto);
+      lista.add(productoB);
+      lista.add(productoC);
+      } else {
+
+        if(bodega == "Arrendador") {
+          final producto = ProductoModel.jsonBodegaA(value);
+          producto.diferencia = producto.arrendador - producto.stockCritico;
+          lista.add(producto);
+        }
+
+        if(bodega == "ServicioLiviano") {
+          final producto = ProductoModel.jsonBodegaB(value);
+          producto.diferencia = producto.servicioliviano - producto.stockCritico;
+          lista.add(producto);          
+        }
+
+        if(bodega == "ServicioPesado") {
+          final producto = ProductoModel.jsonBodegaC(value);
+          producto.diferencia = producto.serviciopesado - producto.stockCritico;
+          lista.add(producto);          
+        }            
+      }
+
+    });
+
+    lista.sort((a,b){
+      return a.diferencia - b.diferencia;
+    });
+
+    return lista;
+  }
 }
 

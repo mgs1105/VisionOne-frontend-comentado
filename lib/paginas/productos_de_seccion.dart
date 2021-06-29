@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
+//Producto
 import 'package:vision_one/bloc/producto_bloc.dart';
-import 'package:vision_one/bloc/seccion_bloc.dart';
 import 'package:vision_one/modelo/producto_model.dart';
-import 'package:vision_one/modelo/seccion_model.dart';
 import 'package:vision_one/provider/producto_provider.dart';
+//Seccion
+import 'package:vision_one/bloc/seccion_bloc.dart';
+import 'package:vision_one/modelo/seccion_model.dart';
 import 'package:vision_one/provider/seccion_provider.dart';
+//Usuario
+import 'package:vision_one/modelo/usuario_model.dart';
 
 import 'package:vision_one/utils/utils.dart' as utils;
 
@@ -34,6 +37,7 @@ class _ProductosPageState extends State<ProductosPage> {
     final List info = ModalRoute.of(context).settings.arguments;// llegamos a esta pantalla mandando una lista con dos parametros y los recibimos de la siguiente manera
     final SeccionModel seccion = info[0]; // aqui obtenemos el primer paramtro
     final String rol = info[1]; // aqui obtenemos el segundo parametro
+    final UsuarioModel usuario = info[2];
     productoBloc.cargarProducto(seccion.id); // ejecutamos el metodo cargarProducto
 
     bool condicion; // creamos una variable bool
@@ -50,7 +54,7 @@ class _ProductosPageState extends State<ProductosPage> {
         title: Text('${seccion.nombre}'),// Especificamos el titulo que tendra esta pantalla
         actions: [botonEliminar(condicion, seccion)]// widgets que se agrupan a la esquina superior derecha del appbar. en este caso dispara un metodo con el widget
       ),
-      body: _body(tamano, seccion, condicion), //metodo que servira para dibujar el body
+      body: _body(tamano, seccion, condicion, usuario), //metodo que servira para dibujar el body
       floatingActionButton: _agregarProd(condicion, seccion) // metodo que servira para dibujar el boton flotante
     );
   }
@@ -68,7 +72,7 @@ class _ProductosPageState extends State<ProductosPage> {
 
   }
 
-  Widget _body(Size tamano, SeccionModel seccion, bool condicion) { // metodo para crear el body
+  Widget _body(Size tamano, SeccionModel seccion, bool condicion, UsuarioModel usuario) { // metodo para crear el body
 
     return StreamBuilder(// return del metodo. Un streamBuilder sirve para ir cargando datos a medida que se van añadiendo. el sistema nota los cambios y los carga
       stream: productoBloc.productoStream,// aqui se selecciona el "rio" (stream) que hara fluir su informacion por aqui
@@ -87,7 +91,7 @@ class _ProductosPageState extends State<ProductosPage> {
             child: ListView.builder(// Widget que se dibujara en la pantalla y que tendra la opcion de ser refrescado
               itemCount: producto.length, // cuenta la cantidad de secciones cargadas
               itemBuilder: (BuildContext context, int i) // propiedad que debe estar para dibujar los widget que queremos dentro del "ListView.Builder" 
-              => _producto(context ,producto[i], seccion, condicion),// metodo que crea los elementos del ListView.builder
+              => _producto(context ,producto[i], seccion, condicion, usuario),// metodo que crea los elementos del ListView.builder
             )
           );
           
@@ -100,9 +104,9 @@ class _ProductosPageState extends State<ProductosPage> {
 
   }
 
-  Widget _producto(BuildContext context, ProductoModel producto, SeccionModel seccion, bool condicion) { //metodo para crear la vista de productos
+  Widget _producto(BuildContext context, ProductoModel producto, SeccionModel seccion, bool condicion, UsuarioModel usuario) { //metodo para crear la vista de productos
 
-    final estilo = TextStyle(color: Colors.black); //creamos una variable que tendra propiedades del TextStyle
+    final estilo = TextStyle(color: Colors.black, fontSize: 17.0); //creamos una variable que tendra propiedades del TextStyle
 
     return Card(// retorno del metodo, dibujara una carta
       child: Column(// dentro de la carta, se almaceran los datos como columna
@@ -110,22 +114,25 @@ class _ProductosPageState extends State<ProductosPage> {
           ListTile(// primer hijo. otro tipo de lista
             onTap: () { //acciones que se realizaran al presionar un elemento de la lista
             if(condicion == true) { // si la condicion es true
-            Navigator.pushNamed(context, 'prodDetalle', arguments: [producto, seccion]); //podremos navegar a una nueva pantalla "prodDetalle" y enviamos los parametros definidos
+            Navigator.pushNamed(context, 'prodDetalle', arguments: [producto, seccion, usuario]); //podremos navegar a una nueva pantalla "prodDetalle" y enviamos los parametros definidos
             } else {
               return null; // si la condicion es false no hacemos nada al presionar un elemento de la lista
             }
             },
-            title: Center(child: Text('${producto.nombre}')),// el titulo del ListTile sera el nombre de cada producto
+            title: Center(child: Text('${producto.nombre}', style: estilo)),// el titulo del ListTile sera el nombre de cada producto
             subtitle: Column( //subtitulo del ListTile
               children: [
               SizedBox(height: 15.0), //espacio imaginario entre un widget y otro, en este caso, espacio de 15 pixeles de alto
               img(producto),// metodo que dibujara la imagen del producto
               SizedBox(height: 15.0),//espacio imaginario entre un widget y otro, en este caso, espacio de 15 pixeles de alto
-              Text('2AN1.Arrendadora: ${producto.stockA}', style: estilo),//texto en pantalla con su estilo
+              Text('2AN1.Arrendadora: ${producto.arrendador}', style: estilo),//texto en pantalla con su estilo
               SizedBox(height: 5.0),//espacio imaginario entre un widget y otro, en este caso, espacio de 5 pixeles de alto
-              Text('2AN2.Servicio Liviano: ${producto.stockB}',style: estilo),//texto en pantalla con su estilo
+              Text('2AN2.Servicio Liviano: ${producto.servicioliviano}',style: estilo),//texto en pantalla con su estilo
               SizedBox(height: 5.0),//espacio imaginario entre un widget y otro, en este caso, espacio de 5 pixeles de alto
-              Text('2AN3.Servicio Pesado: ${producto.stockC}',style: estilo),//texto en pantalla con su estilo
+              Text('2AN3.Servicio Pesado: ${producto.serviciopesado}',style: estilo),//texto en pantalla con su estilo
+              SizedBox(height: 10.0),
+              Text('N° Parte: ${producto.nParte}',style: TextStyle(color: Colors.red, fontSize: 15.0)),
+              SizedBox(height: 15.0),
               ]
             )
           ),
@@ -151,7 +158,7 @@ class _ProductosPageState extends State<ProductosPage> {
       child: FadeInImage(// Widget que carga una imagen de internet (NetworkImage) y tiene la propiedad para cargar una imagen local (AssetImage) mientras se realiza la carga de internet
         placeholder: AssetImage('imagenes/jar-loading.gif'), //muestra el gif hasta que la imagen de internet esta cargada
         image: NetworkImage(producto.fotoURL),// carga la imagen de internet desde una url
-        fit: BoxFit.cover,// propiedad que hace que la imagen ocupe solo el espacio disponible y no se salga de los margenes
+        fit: BoxFit.scaleDown,// propiedad que hace que la imagen ocupe solo el espacio disponible y no se salga de los margenes
       ),
     );
   }  

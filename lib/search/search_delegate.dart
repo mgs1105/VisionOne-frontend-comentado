@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vision_one/modelo/producto_model.dart';
 import 'package:vision_one/provider/producto_provider.dart';
+import 'package:vision_one/provider/seccion_provider.dart';
 
 class DataProd extends SearchDelegate { // creamos una clase para manejar el buscador de productos
 
   ProductoModel producto = new ProductoModel(); // creamos una nueva instancia de productoModel
   ProductoProvider productoProvider = new ProductoProvider();// creamos una nueva instancia de productoProvider
+  SeccionProvider seccionProvider = new SeccionProvider();
 
   @override
 
@@ -51,16 +53,24 @@ class DataProd extends SearchDelegate { // creamos una clase para manejar el bus
 
           if(snapshot.hasData) {// "si el snapshot tiene informacion"... hara lo siguiente.
             final productos = snapshot.data;// guardamos la "Data" (informacion) en la variable productos
-          
+            TextStyle color = TextStyle(color: Colors.black, fontSize: 15.0);
+
           return ListView(// Widget que se dibujara en la pantalla para mantener una estructura
             children: productos.map((producto) { //recorremos la lista de productos con una variable "producto"
               return ListTile( // widget que se dibujara en pantalla para ver los resultados obtenidos
-                title: Text(producto.nombre), //Texto en pantalla con el nombre del producto
+                title: Text(producto.nombre, style: TextStyle(fontSize: 18.0, color: Colors.black)), //Texto en pantalla con el nombre del producto
                 subtitle: Column( //los subtitulos se almacenaran el columnas
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [ 
-                    Text('2AN1: Arrendadora  ${producto.stockA}'), //Texto en pantalla con datos del producto
-                    Text('2AN2: Servicio Liviano  ${producto.stockB}'),//Texto en pantalla con datos del producto
-                    Text('2AN3 Servicio Pesado  ${producto.stockC}'),//Texto en pantalla con datos del producto
+                    SizedBox(height: 15.0),
+                    nombreSeccion(producto.idseccion),
+                    SizedBox(height: 5.0),
+                    Text('2AN1: Arrendadora  ${producto.arrendador}', style: color),//Texto en pantalla con datos del producto
+                    Text('2AN2: Servicio Liviano  ${producto.servicioliviano}', style: color),//Texto en pantalla con datos del producto
+                    Text('2AN3 Servicio Pesado  ${producto.serviciopesado}', style: color),//Texto en pantalla con datos del producto
+                    SizedBox(height: 10.0),
+                    Text('Numero de parte: ${producto.nParte}', style: TextStyle(color: Colors.red)),
+                    SizedBox(height: 20.0),
                   ],
                 ),
               );
@@ -74,7 +84,29 @@ class DataProd extends SearchDelegate { // creamos una clase para manejar el bus
       );
 
   }
-
   
+  Widget nombreSeccion(int id) {
+
+  return FutureBuilder(
+    future: seccionProvider.buscarSeccion(id),
+    builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+      
+      if(snapshot.hasData) {
+      final secciones = snapshot.data;
+
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Seccion: ', style: TextStyle(fontSize: 16.0, color: Colors.black)),
+          secciones,
+        ],
+      );
+      } else {
+        return Text('Cargando...');
+      }
+    }
+  );
+
+}  
 
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 //importamos el paquete http. Este paquete primero debe ser importado en el archivo "pubspec.yaml"
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 //Model
@@ -39,6 +40,9 @@ class SeccionProvider {
       lista.add(seccion); // añadimos la seccion a la lista vacia creada anteriormente
 
     });
+    lista.sort((a,b) {
+      return a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()); // metodo para ordenar la lista en orden alfabetico por nombre
+    });
 
     return lista; // regresamos la lista con las secciones
 
@@ -59,6 +63,28 @@ class SeccionProvider {
     final url = '$_dominio/seccion/$id'; // definimos el url donde queremos realizar la peticion
     await http.delete(Uri.parse(url)); // esperamos a que se realice la eliminacion
     
+  }
+
+  Future<Widget> buscarSeccion(int id) async {
+
+    final url = '$_dominio/seccion';
+    final resp = await http.get(Uri.parse(url));
+    final decodeData = json.decode(resp.body);
+
+    Widget nombreSeccion;
+
+    if(decodeData == null) return Text('');
+
+    decodeData.forEach((value) {
+
+      final seccion = SeccionModel.fromJson(value);
+      if(seccion.id == id) {
+        nombreSeccion = Text(
+          '${seccion.nombre}', 
+          style: TextStyle(color: Colors.black, fontSize: 15.0));
+      }
+    });
+    return nombreSeccion;
   }
 
 }

@@ -1,16 +1,18 @@
 // paquete que contiene todo el "material" de widgets para desarrollar la app
 import 'package:flutter/material.dart';
-import 'package:vision_one/paginas/crear_usuario.dart';
 
 //Importamos las paginas que tendra nuestra aplicacion
 import 'package:vision_one/paginas/iniciar_sesion.dart';
 import 'package:vision_one/paginas/home.dart';
+import 'package:vision_one/paginas/crear_bodega.dart';
+import 'package:vision_one/paginas/crear_usuario.dart';
 import 'package:vision_one/paginas/admin_usuarios.dart';
 import 'package:vision_one/paginas/admin_seccion.dart';
 import 'package:vision_one/paginas/lista_usuarios.dart';
 import 'package:vision_one/paginas/producto_detalle.dart';
 import 'package:vision_one/paginas/productos_de_seccion.dart';
 import 'package:vision_one/paginas/crear_producto.dart';
+import 'package:vision_one/paginas/stock_critico.dart';
 
 //Un proyecto de flutter SIEMPRE buscara el archivo "main.dart" para correr la aplicacion
 //Dentro de el buscara el metodo "main" y lo ejecutara.
@@ -37,10 +39,12 @@ class MyApp extends StatelessWidget {
  title: 'VisionOne', // titulo de la aplicacion
       initialRoute: 'iniciarSesion', //ruta iniciar que desplegara el proyecto
       routes: { //definimos un Map con todas la rutas que tendra nuestra aplicacion.
-// definimos el nombre de como llegar a la ruta -> llamamos a la pagina. 
+        // definimos el nombre de como llegar a la ruta -> llamamos a la pagina. 
         'iniciarSesion' : (BuildContext context) => IniciarSesion(), 
         'home'          : (BuildContext context) => HomePage(),
         'lista_users'   : (BuildContext context) => ListaUserPage(),
+        'stock_critico' : (BuildContext context) => StockCriticoPage(),
+        'crear_bodega'  : (BuildContext context) => CrearBodegaPage(),
         'admin_users'   : (BuildContext context) => AdminUsuarioPage(),
         'crear_users'   : (BuildContext context) => CrearUsuarioPage(),
         'admin_seccion' : (BuildContext context) => AdminSeccionPage(),

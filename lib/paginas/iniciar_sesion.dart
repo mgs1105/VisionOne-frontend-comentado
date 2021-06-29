@@ -29,6 +29,9 @@ class _IniciarSesionState extends State<IniciarSesion> {
 
     return Scaffold(// scaffold es el lienzo principal donde se dibujan los Widgets
       appBar: AppBar(// es un menu superior que podemos ver en la pantalla. en el se define el titulo y otros botones que nos daran otras funcionalidades
+        actions: [
+          Container(),
+        ],
         centerTitle: true,// centramos el titulo
         title: Text('Bienvenido') // Especificamos el titulo que tendra esta pantalla
       ),

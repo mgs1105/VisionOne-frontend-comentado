@@ -10,6 +10,7 @@ import 'package:vision_one/provider/producto_provider.dart';
 class ProductoBloc {
 
   final _productoController = new BehaviorSubject<List<ProductoModel>>(); //creamos una variable de tipo BehaviorSubject
+  final _stockCriticoController = new BehaviorSubject<List<ProductoModel>>();
   //BehaviorSubject: es un controlador que permite escuchar varias veces la informacion que se mueve por el stream, y su tipo en este caso es
   //una lista de productos
   final _productoProvider = new ProductoProvider(); //creamos una nueva instancia de la clase productoProvider.
@@ -18,9 +19,15 @@ class ProductoBloc {
 
   Stream<List<ProductoModel>> get productoStream => _productoController.stream;   // creamos un Stream llamado "productoStream" que sera de tipo Lista de productos.
   Stream<List<ProductoModel>> get cargandoStream  => _productoController.stream;  // creamos un Stream llamado "cargandoStream" que sera de tipo Lista de productos.
+  Stream<List<ProductoModel>> get stockCriticoStream => _stockCriticoController.stream;
   //Stream => un stream es un "flujo" o "rio" de informacion en el cual se puede ir agregando datos y estos se iran reflejando en pantalla.
   //los dos stream creados (productoStream y cargandoStream) escuchan informacion del mismo lugar. _productoController.stream;
 
+  Future stockCritico(String bodega) async {
+
+    final productos = await _productoProvider.stockCritico(bodega);
+    _stockCriticoController.sink.add(productos);
+  }
 
   Future cargarProducto(int idseccion) async { //creamos un metodo para cargar productos, debe recibir el id de la seccion para solo cargar productos asociados a esa seccion
 
@@ -42,6 +49,7 @@ class ProductoBloc {
  
   void dispose(){ // los strem creados deben cerrarse siempre. la fluidez del "rio" debe llegar hasta cierto punto y no dejarlo como "infinito" 
     _productoController?.close();
+    _stockCriticoController?.close();
     _cargandoController?.close();
   }
 

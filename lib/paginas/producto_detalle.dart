@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vision_one/bloc/producto_bloc.dart';
 import 'package:vision_one/modelo/producto_model.dart';
 import 'package:vision_one/modelo/seccion_model.dart';
+import 'package:vision_one/modelo/usuario_model.dart';
 import 'package:vision_one/provider/producto_provider.dart';
 
 import 'package:vision_one/utils/utils.dart' as utils;
@@ -25,6 +26,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
     final List<Object> opcion = ModalRoute.of(context).settings.arguments; // llegamos a esta pantalla mandando una lista con dos objetos y los recibimos de la siguiente manera
     final ProductoModel producto = opcion[0];  // Aqui obtenemos el primer objeto
     final SeccionModel seccion = opcion[1];// Aqui obtenemos el segundo objeto
+    final UsuarioModel usuario = opcion[2];
 
     final tamano = MediaQuery.of(context).size; // definimos una variable "tamano" que sirve para controlar el espacio que usan los widget en pantalla
 
@@ -44,7 +46,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
       ),
       body: SingleChildScrollView(// este Widget (SingleChildScrollView) sirve para hacer scroll infinito mientras la pantalla lo vaya requiriendo.
         child: Center(// definimos el cuerpo de la pantalla. Lo definimos Centrado(Center)
-          child: _body(producto, tamano), // metodo que creara el body
+          child: _body(producto, tamano, usuario), // metodo que creara el body
         ) 
       ),
     );
@@ -68,12 +70,12 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
 
   Widget _alertas(ProductoModel producto, SeccionModel seccion, TextStyle color) { //metodo que disparara las alertas
 
-    if(producto.stockA == 0 && producto.stockB == 0 && producto.stockC == 0) { // condicion: si el producto tiene Stock 0 en todas las sucursales hara lo siguiente
+    if(producto.arrendador == 0 && producto.servicioliviano == 0 && producto.serviciopesado == 0) { // condicion: si el producto tiene Stock 0 en todas las sucursales hara lo siguiente
 
     final color = TextStyle(color: Colors.white);  //creamos una variale color que tendra propiedades de TextStyle.
 
       return AlertDialog(// regresa una alerta
-        title: Text('Esta seguro que desea eliminar el producto?'), // titulo de la alerta
+        title: Text('¿Esta seguro que desea eliminar el producto?'), // titulo de la alerta
         actions: [// widgets que tendra la alerta
           TextButton(// boton con un texto
             style: TextButton.styleFrom(// estilo para el boton
@@ -117,7 +119,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
     }
   }
 
-  Widget _body(ProductoModel producto, Size tamano) {// metodo que dibujara el body
+  Widget _body(ProductoModel producto, Size tamano, UsuarioModel usuario) {// metodo que dibujara el body
 
     return  Column( // retorno del metodo
       children: [ // lista de widgets(hijos)
@@ -128,7 +130,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
         SizedBox(height: tamano.height * 0.03),//espacio imaginario entre un widget y otro, en este caso, espacio de 3% de alto
         Text('Stock en Sucursales', style: TextStyle(fontSize: 18.0)), // //Texto en pantalla con una fuente de 18 pixeles
         SizedBox(height: tamano.height * 0.03),//espacio imaginario entre un widget y otro, en este caso, espacio de 3% de alto
-        _tabla(producto, tamano),///metodo que dibujara una tabla con informacion del producto
+        _tabla(producto, tamano, usuario),///metodo que dibujara una tabla con informacion del producto
         SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 3% de alto
         _boton(producto), // metodo que dibujara los botones
       ],
@@ -152,18 +154,20 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
       child: FadeInImage( // Widget que carga una imagen de internet (NetworkImage) y tiene la propiedad para cargar una imagen local (AssetImage) mientras se realiza la carga de internet
         placeholder: AssetImage('imagenes/jar-loading.gif'), //muestra el gif hasta que la imagen de internet esta cargada
         image: NetworkImage(producto.fotoURL), // carga la imagen de internet desde una url
-        fit: BoxFit.cover, // propiedad que hace que la imagen ocupe solo el espacio disponible y no se salga de los margenes
+        fit: BoxFit.scaleDown, // propiedad que hace que la imagen ocupe solo el espacio disponible y no se salga de los margenes
       ),
     );
   }  
 
   }
 
-  Widget _tabla(ProductoModel producto, Size tamano) {// metodo que creara una tabla para ordenar el stock
+  Widget _tabla(ProductoModel producto, Size tamano, UsuarioModel usuario) {// metodo que creara una tabla para ordenar el stock
 
     final decoracion = InputDecoration( // creamos una variable que tendra una propiedad de bordes un poco mas oscuros
       border: const OutlineInputBorder()
     );
+
+    if(usuario.rol == "ADMIN") {
 
     return Form( //return del metodo. Un formulario
       key: keyformulario, // especificamos la llave que tendra el formulario. esta llave se usa despues para validar el estado del formulario
@@ -176,7 +180,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                 margin: EdgeInsets.only(right: 12.0, bottom: 10.0), //Margen que se le dara al contenedor a la derecha y arriba
                 child: TextFormField( // el hijo del widget Container sera un TextFromField que tiene las propiedades de un input para escribir en el
                   keyboardType: TextInputType.number, //activa el teclado numero en el telefono
-                  initialValue: producto.stockA.toString(), //cargas el stock del producto convertido de un entero a un String 
+                  initialValue: producto.arrendador.toString(), //cargas el stock del producto convertido de un entero a un String 
                   decoration: decoracion, //decoracion que se le da al input 
                   validator: (value) {//validacion del input
                     if(value.length <= 0) { //si no se a tipeado nada mandara el siguiente error 
@@ -185,7 +189,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                       return null;
                     }
                   },
-                  onSaved: (value) => producto.stockA = int.parse(value), //guardamos la cantidad especifica en el producto.StockA
+                  onSaved: (value) => producto.arrendador = int.parse(value), //guardamos la cantidad especifica en el producto.StockA
                 ),
               ),
             ]
@@ -197,7 +201,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                 margin: EdgeInsets.only(right: 12.0, bottom: 10.0),//Margen que se le dara al contenedor a la derecha y arriba
                 child: TextFormField(// el hijo del widget Container sera un TextFromField que tiene las propiedades de un input para escribir en el
                   keyboardType: TextInputType.number,//activa el teclado numero en el telefono
-                  initialValue: producto.stockB.toString(),//cargas el stock del producto convertido de un entero a un String 
+                  initialValue: producto.servicioliviano.toString(),//cargas el stock del producto convertido de un entero a un String 
                   decoration: decoracion, //decoracion que se le da al input 
                   validator: (value) {//validacion del input
                     if(value.length <= 0) { //si no se a tipeado nada mandara el siguiente error 
@@ -206,7 +210,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                       return null;
                     }
                   },
-                  onSaved: (value) => producto.stockB = int.parse(value),//guardamos la cantidad especifica en el producto.StockB
+                  onSaved: (value) => producto.servicioliviano = int.parse(value),//guardamos la cantidad especifica en el producto.StockB
                 ),
               ),
             ]
@@ -218,7 +222,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                 margin: EdgeInsets.only(right: 12.0, bottom: 10.0),//Margen que se le dara al contenedor a la derecha y arriba
                 child: TextFormField(// el hijo del widget Container sera un TextFromField que tiene las propiedades de un input para escribir en el
                   keyboardType: TextInputType.number,//activa el teclado numero en el telefono
-                  initialValue: producto.stockC.toString(),//cargas el stock del producto convertido de un entero a un String 
+                  initialValue: producto.serviciopesado.toString(),//cargas el stock del producto convertido de un entero a un String 
                   decoration: decoracion,//decoracion que se le da al input
                   validator: (value) {//validacion del input
                     if(value.length <= 0) {//si no se a tipeado nada mandara el siguiente error 
@@ -227,7 +231,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                       return null;
                     }
                   },
-                  onSaved: (value) => producto.stockC = int.parse(value),//guardamos la cantidad especifica en el producto.StockC
+                  onSaved: (value) => producto.serviciopesado = int.parse(value),//guardamos la cantidad especifica en el producto.StockC
                 ),
               ),
             ]
@@ -236,6 +240,61 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
       ),
     );
 
+    } else {
+
+      if(usuario.bodega == "Arrendador") {
+        return formulario(usuario.bodega, producto.arrendador, producto);
+      }
+      if(usuario.bodega == "ServicioLiviano") {
+        return formulario(usuario.bodega, producto.servicioliviano, producto);
+      }
+      if(usuario.bodega == "ServicioPesado") {
+        return formulario(usuario.bodega, producto.serviciopesado, producto);
+      }
+
+    }
+
+
+  }
+
+  Widget formulario(String bodega, int stock, ProductoModel producto) {
+
+    final decoracion = InputDecoration( // creamos una variable que tendra una propiedad de bordes un poco mas oscuros
+      border: const OutlineInputBorder()
+    );
+
+    return Form(
+      key: keyformulario,
+      child: Table(
+        children: [
+          TableRow(
+            children: [
+              _sucursal(bodega),
+              Container(// segundo elemento de la tercera fila
+                margin: EdgeInsets.only(right: 12.0, bottom: 10.0),//Margen que se le dara al contenedor a la derecha y arriba
+                child: TextFormField(// el hijo del widget Container sera un TextFromField que tiene las propiedades de un input para escribir en el
+                  keyboardType: TextInputType.number,//activa el teclado numero en el telefono
+                  initialValue: stock.toString(),//cargas el stock del producto convertido de un entero a un String 
+                  decoration: decoracion,//decoracion que se le da al input
+                  validator: (value) {//validacion del input
+                    if(value.length <= 0) {//si no se a tipeado nada mandara el siguiente error 
+                      return 'Debe especificar la cantidad';//ERROR: aparecera debajo del input con color rojo
+                    } else {
+                      return null;
+                    }
+                  },
+                  onSaved: (value) => {
+                    if(bodega == "Arrendador") producto.arrendador = int.parse(value),//guardamos la cantidad especifica en el producto.StockC
+                    if(bodega == "ServicioLiviano") producto.servicioliviano = int.parse(value),
+                    if(bodega == "ServicioPesado") producto.serviciopesado = int.parse(value)
+                  }
+                ),
+              ),
+            ]
+          )
+        ],
+      ),
+    );
   }
 
   Widget _sucursal(String sucursal) { //metodo que dibujara el nombre de la sucursal
@@ -265,8 +324,8 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
         keyformulario.currentState.save();// guarda el formulario en caso que pase todas las validaciones puestas.
         productoProvider.modificarProducto(producto);//ejecutamos el metodo de modifcarProducto
 
-            final snack = utils.snackBar('Producto modificado con exito'); // creamos una variable llamada "snack" que tomara el valor del metodo "snackBar" creado en el archivo utils
-            ScaffoldMessenger.of(context).showSnackBar(snack); // desplegamos el snackbar en pantalla
+        final snack = utils.snackBar('Producto modificado con exito'); // creamos una variable llamada "snack" que tomara el valor del metodo "snackBar" creado en el archivo utils
+        ScaffoldMessenger.of(context).showSnackBar(snack); // desplegamos el snackbar en pantalla
       }, 
     );
   }

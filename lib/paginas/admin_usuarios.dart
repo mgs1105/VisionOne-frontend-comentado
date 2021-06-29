@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:vision_one/modelo/usuario_model.dart';
+import 'package:vision_one/provider/bodega_provider.dart';
 import 'package:vision_one/provider/usuario_provider.dart';
 
 import 'package:vision_one/utils/utils.dart' as utils;
@@ -16,7 +17,8 @@ class _AdminUsuarioPageState extends State<AdminUsuarioPage> {
   final keyformulario = GlobalKey<FormState>();// creamos una variable de tipo FromState que sirve para manejar el estado de un formulario. si se completo o no.
 
   UsuarioProvider usuarioProvider = new UsuarioProvider();//creamos una nueva instancia de la clase UsuarioProvider
-  
+  BodegaProvider bodegaProvider = new BodegaProvider();
+
   List<String> roles = ["VENDEDOR", "BODEGUERO", "ADMIN"];//creamos una lista de String con 3 valores.
 
   @override
@@ -53,6 +55,11 @@ class _AdminUsuarioPageState extends State<AdminUsuarioPage> {
         Text('Rol', style: fuente), //Widget para dibujar un texto en la pantalla. Ademas recibe el estilo definido con anterioridad
         SizedBox(height: tamano.height * 0.03), ////espacio imaginario entre un widget y otro, en este caso, espacio de 3% de alto
         _rol(tamano, usuario), // metodo que recibe el tamano y usuario
+        SizedBox(height: tamano.height * 0.04),
+        Text('Bodega', style: fuente),
+        Text('*solo si el rol es bodeguero*', style: TextStyle(fontSize: 14.0)),
+        SizedBox(height: tamano.height * 0.03),
+        _bodega(tamano, usuario),
         SizedBox(height: tamano.height * 0.1), // espacio imaginario entre un widget y otro, en este caso, espacio de 1% de alto
         _botones(tamano, usuario),  //metodo donde se definen los botones de la pagina y recibe el tamano y usuario.
       ],
@@ -95,6 +102,42 @@ class _AdminUsuarioPageState extends State<AdminUsuarioPage> {
         } 
       ),
     );
+  }
+
+  Widget _bodega(Size tamano, UsuarioModel usuario) {
+
+    String _bodega;
+
+    return FutureBuilder(
+      future: bodegaProvider.cargarBodega(),
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        
+        if(snapshot.hasData) {
+
+        final bodegas = snapshot.data;
+
+        return Container(
+          width: tamano.width *0.7,
+            child: DropdownButtonFormField(
+              value: '${bodegas[0]}',
+              items: utils.opcionesBodega(bodegas),
+              onChanged: (opt) {
+                setState(() {
+                  _bodega = opt;
+                });
+              },
+              onSaved: (opt) {
+                usuario.bodega = opt;
+              },
+            ),
+        );
+
+        } else {
+          return Container();
+        }
+      },
+    );
+
   }
 
   Widget _botones(Size tamano, UsuarioModel usuario) { // metodo que crea los botones

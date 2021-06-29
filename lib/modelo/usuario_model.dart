@@ -9,23 +9,27 @@ class UsuarioModel {
   String  rut;
   String  rol;
   String  password;
+  String  bodega;
 
   UsuarioModel ({
     this.rut,
     this.rol,
     this.password,
+    this.bodega,
   });
 
     factory UsuarioModel.fromJson(Map<String, dynamic> json) => new UsuarioModel(  // es una funcion que llamaremos cuando queremos generar una instancia de Usuario que viene de un mapa en formato json
       rut      : json["Rut"],
       rol      : json["Rol"],
       password : json["Password"],
+      bodega   : json["Bodega"] 
     );
 
     Map<String, dynamic> toJson() => {//empareja los datos con los valores de las variables
       "Rut"      : rut,
       "Rol"      : rol,
       "Password" : password,
+      "Bodega"   : bodega,
     };
 
 }

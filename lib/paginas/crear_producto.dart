@@ -31,6 +31,7 @@ class _CrearProdPageState extends State<CrearProdPage> {
   Widget build(BuildContext context) {//el metodo build es el encargado de dibujar los widgets en la pantalla, por eso debe regresar un widget a fuerza
   //el context contiene la informacion del arbol de widget.
 
+
     return Scaffold(// scaffold es el lienzo principal donde se dibujan los Widgets
       appBar: AppBar(// es un menu superior que podemos ver en la pantalla. en el se define el titulo y otros botones que nos daran otras funcionalidades
         centerTitle: true,// centramos el titulo
@@ -64,6 +65,10 @@ class _CrearProdPageState extends State<CrearProdPage> {
         SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
         _stockC(tamano),//metodo para definir el input del stockC
         SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
+        _stockCritico(tamano),
+        SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
+        _numeroParte(tamano),
+        SizedBox(height: tamano.height * 0.05),
         _boton(),//metodo para definir el boton agregar
         SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
       ]
@@ -129,17 +134,17 @@ class _CrearProdPageState extends State<CrearProdPage> {
         keyboardType: TextInputType.number, // al presionar el input el se abre el teclado de numeros
         textCapitalization: TextCapitalization.sentences, 
         decoration: InputDecoration( // decoracion del input
-          labelText: 'Stock en sucursal A' // texto de ayuda.
+          labelText: 'Stock en sucursal Arrendador' // texto de ayuda.
         ),
         validator: (value) { // validacion del completado de campos
 
-          if(value.length == null) { // si el campo esta vacio lanza el siguiente error debajo del input
+          if(value.length <= 0) { // si el campo esta vacio lanza el siguiente error debajo del input
             return 'Debe especificar la cantidad en bodega';
           } else {
             return null;
           }
         },
-        onSaved: (value) => productoModel.stockA = int.parse(value) // Guardamos el contenido en la variable StockA de producto. debemos convertir el string a un int
+        onSaved: (value) => productoModel.arrendador = int.parse(value) // Guardamos el contenido en la variable StockA de producto. debemos convertir el string a un int
       ),
     );
 
@@ -153,7 +158,7 @@ class _CrearProdPageState extends State<CrearProdPage> {
         keyboardType: TextInputType.number,// al presionar el input el se abre el teclado de numeros
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(// decoracion del input
-          labelText: 'Stock en sucursal B' // texto de ayuda.
+          labelText: 'Stock en sucursal Servicio liviano' // texto de ayuda.
         ),
         validator: (value) {// validacion del completado de campos
           if(value.length <= 0) {// si el campo esta vacio lanza el siguiente error debajo del input
@@ -162,7 +167,7 @@ class _CrearProdPageState extends State<CrearProdPage> {
             return null;
           }
         },
-        onSaved: (value) => productoModel.stockB = int.parse(value)// Guardamos el contenido en la variable StockA de producto. debemos convertir el string a un int
+        onSaved: (value) => productoModel.servicioliviano = int.parse(value)// Guardamos el contenido en la variable StockA de producto. debemos convertir el string a un int
       ),
     );
 
@@ -176,7 +181,7 @@ class _CrearProdPageState extends State<CrearProdPage> {
         keyboardType: TextInputType.number,// al presionar el input el se abre el teclado de numeros
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(// decoracion del input
-          labelText: 'Stock en sucursal C' // texto de ayuda.
+          labelText: 'Stock en sucursal Servicio pesado' // texto de ayuda.
         ),
         validator: (value) {// validacion del completado de campos
           if(value.length <= 0) {// si el campo esta vacio lanza el siguiente error debajo del input
@@ -185,7 +190,53 @@ class _CrearProdPageState extends State<CrearProdPage> {
             return null;
           }
         },
-        onSaved: (value) => productoModel.stockC = int.parse(value)// Guardamos el contenido en la variable StockC de producto. debemos convertir el string a un int
+        onSaved: (value) => productoModel.serviciopesado = int.parse(value)// Guardamos el contenido en la variable StockC de producto. debemos convertir el string a un int
+      ),
+    );
+    
+  }
+
+  Widget _stockCritico(Size tamano) {//metodo para definir el input del stockCritico
+
+    return Container( // retorno del metodo
+      width: tamano.width * 0.7,
+      child: TextFormField(// widget para crear el input del stockCritico
+        keyboardType: TextInputType.number,// al presionar el input el se abre el teclado de numeros
+        textCapitalization: TextCapitalization.sentences,
+        decoration: InputDecoration(// decoracion del input
+          labelText: 'Stock Critico del producto' // texto de ayuda.
+        ),
+        validator: (value) {// validacion del completado de campos
+          if(value.length <= 0) {// si el campo esta vacio lanza el siguiente error debajo del input
+            return 'Debe especificar el stock critico del producto';
+          } else {
+            return null;
+          }
+        },
+        onSaved: (value) => productoModel.stockCritico = int.parse(value)// Guardamos el contenido en la variable stockCritico de producto. debemos convertir el string a un int
+      ),
+    );
+    
+  }
+
+  Widget _numeroParte(Size tamano) {//metodo para definir el input del stockCritico
+
+    return Container( // retorno del metodo
+      width: tamano.width * 0.7,
+      child: TextFormField(// widget para crear el input del stockCritico
+        keyboardType: TextInputType.number,// al presionar el input el se abre el teclado de numeros
+        textCapitalization: TextCapitalization.sentences,
+        decoration: InputDecoration(// decoracion del input
+          labelText: 'Numero de parte' // texto de ayuda.
+        ),
+        validator: (value) {// validacion del completado de campos
+          if(value.length != 10) {// si el campo esta vacio lanza el siguiente error debajo del input
+            return 'El numero de parte debe ser de 10 caracteres';
+          } else {
+            return null;
+          }
+        },
+        onSaved: (value) => productoModel.nParte = value// Guardamos el contenido en la variable stockCritico de producto. debemos convertir el string a un int
       ),
     );
     
