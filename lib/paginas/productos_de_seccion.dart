@@ -37,7 +37,7 @@ class _ProductosPageState extends State<ProductosPage> {
     final List info = ModalRoute.of(context).settings.arguments;// llegamos a esta pantalla mandando una lista con dos parametros y los recibimos de la siguiente manera
     final SeccionModel seccion = info[0]; // aqui obtenemos el primer paramtro
     final String rol = info[1]; // aqui obtenemos el segundo parametro
-    final UsuarioModel usuario = info[2];
+    final UsuarioModel usuario = info[2];// aqui obtenemos el tercer parametro
     productoBloc.cargarProducto(seccion.id); // ejecutamos el metodo cargarProducto
 
     bool condicion; // creamos una variable bool
@@ -89,7 +89,7 @@ class _ProductosPageState extends State<ProductosPage> {
           return RefreshIndicator( // retorno del builder. un RefreshIndicator da la opcion de hacer scroll hacia abajo en la pantalla y refrescarla.
             onRefresh: _refrescar,//metodo que ejecuta el "refresco" de pantalla
             child: ListView.builder(// Widget que se dibujara en la pantalla y que tendra la opcion de ser refrescado
-              itemCount: producto.length, // cuenta la cantidad de secciones cargadas
+              itemCount: producto.length, // cuenta la cantidad de productos cargados
               itemBuilder: (BuildContext context, int i) // propiedad que debe estar para dibujar los widget que queremos dentro del "ListView.Builder" 
               => _producto(context ,producto[i], seccion, condicion, usuario),// metodo que crea los elementos del ListView.builder
             )
@@ -130,9 +130,9 @@ class _ProductosPageState extends State<ProductosPage> {
               Text('2AN2.Servicio Liviano: ${producto.servicioliviano}',style: estilo),//texto en pantalla con su estilo
               SizedBox(height: 5.0),//espacio imaginario entre un widget y otro, en este caso, espacio de 5 pixeles de alto
               Text('2AN3.Servicio Pesado: ${producto.serviciopesado}',style: estilo),//texto en pantalla con su estilo
-              SizedBox(height: 10.0),
-              Text('N° Parte: ${producto.nParte}',style: TextStyle(color: Colors.red, fontSize: 15.0)),
-              SizedBox(height: 15.0),
+              SizedBox(height: 10.0),//espacio imaginario entre un widget y otro, en este caso, espacio de 10 pixeles de alto
+              Text('N° Parte: ${producto.nParte}',style: TextStyle(color: Colors.red, fontSize: 15.0)),//texto con el numero de parte del producto
+              SizedBox(height: 15.0),//espacio imaginario entre un widget y otro, en este caso, espacio de 15 pixeles de alto
               ]
             )
           ),

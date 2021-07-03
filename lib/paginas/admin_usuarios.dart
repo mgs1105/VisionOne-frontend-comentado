@@ -55,11 +55,11 @@ class _AdminUsuarioPageState extends State<AdminUsuarioPage> {
         Text('Rol', style: fuente), //Widget para dibujar un texto en la pantalla. Ademas recibe el estilo definido con anterioridad
         SizedBox(height: tamano.height * 0.03), ////espacio imaginario entre un widget y otro, en este caso, espacio de 3% de alto
         _rol(tamano, usuario), // metodo que recibe el tamano y usuario
-        SizedBox(height: tamano.height * 0.04),
-        Text('Bodega', style: fuente),
-        Text('*solo si el rol es bodeguero*', style: TextStyle(fontSize: 14.0)),
+        SizedBox(height: tamano.height * 0.04),//espacio imaginario entre un widget y otro, en este caso, espacio de 4% de alto
+        Text('Bodega', style: fuente),//Widget para dibujar un texto en la pantalla. Ademas recibe el estilo definido con anterioridad
+        Text('*solo si el rol es bodeguero*', style: TextStyle(fontSize: 14.0)),//Widget para dibujar un texto en la pantalla. Ademas recibe el estilo definido con anterioridad
         SizedBox(height: tamano.height * 0.03),
-        _bodega(tamano, usuario),
+        _bodega(tamano, usuario),//metodo donde se definen la bodega del usuario si fuera hacer necesario
         SizedBox(height: tamano.height * 0.1), // espacio imaginario entre un widget y otro, en este caso, espacio de 1% de alto
         _botones(tamano, usuario),  //metodo donde se definen los botones de la pagina y recibe el tamano y usuario.
       ],
@@ -104,36 +104,36 @@ class _AdminUsuarioPageState extends State<AdminUsuarioPage> {
     );
   }
 
-  Widget _bodega(Size tamano, UsuarioModel usuario) {
+  Widget _bodega(Size tamano, UsuarioModel usuario) {//metodo para crear el input de la creacion de bodega
 
-    String _bodega;
+    String _bodega;//creamos una variable string
 
-    return FutureBuilder(
-      future: bodegaProvider.cargarBodega(),
-      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+    return FutureBuilder( //regreso del metodo.
+      future: bodegaProvider.cargarBodega(), //cargamos el metodo future donde se obtendra la informacion
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {// opcion builder donde creamos los widget para ser dibujados en pantalla, ademas obtenemos la informacion del stream en la variable "snapshot"
         
-        if(snapshot.hasData) {
+        if(snapshot.hasData) {//si el snapshot tiene informacion...
 
-        final bodegas = snapshot.data;
+        final bodegas = snapshot.data; // guarda la informacion en una variable llamada "bodegas"
 
-        return Container(
-          width: tamano.width *0.7,
-            child: DropdownButtonFormField(
-              value: '${bodegas[0]}',
-              items: utils.opcionesBodega(bodegas),
-              onChanged: (opt) {
-                setState(() {
-                  _bodega = opt;
+        return Container( //regresamos un contenedor
+          width: tamano.width *0.7,//tamano del 70% de la pantalla a lo ancho
+            child: DropdownButtonFormField(//definimos el input que contendra la lista de bodegas (ComboBox)
+              value: '${bodegas[0]}',//definimos el primer valor que se vera en la lista
+              items: utils.opcionesBodega(bodegas),//definimos el resto de la lista del comboBox
+              onChanged: (opt) {//propiedad que hara visible los cambios en el input dependiendo de lo que seleccionemos
+                setState(() {//metodo que acutaliza la pagina constantemente ante los cambios
+                  _bodega = opt; // guardamos la opcion seleccionada
                 });
               },
-              onSaved: (opt) {
-                usuario.bodega = opt;
+              onSaved: (opt) { //metodo para guardar la opcion seleccionada en el modelo
+                usuario.bodega = opt; //le asignamos el valor a la propiedad del modelo
               },
             ),
         );
 
-        } else {
-          return Container();
+        } else {// si el snapshot NO tiene informacion
+          return Container();// regresa un contenedor
         }
       },
     );

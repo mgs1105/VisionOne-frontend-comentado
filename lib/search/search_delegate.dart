@@ -60,17 +60,17 @@ class DataProd extends SearchDelegate { // creamos una clase para manejar el bus
               return ListTile( // widget que se dibujara en pantalla para ver los resultados obtenidos
                 title: Text(producto.nombre, style: TextStyle(fontSize: 18.0, color: Colors.black)), //Texto en pantalla con el nombre del producto
                 subtitle: Column( //los subtitulos se almacenaran el columnas
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [ 
-                    SizedBox(height: 15.0),
-                    nombreSeccion(producto.idseccion),
-                    SizedBox(height: 5.0),
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, //alinea los widget de una forma determinada
+                  children: [ //propiedad de las columnas donde definimos a todos los hijos (Widgets)
+                    SizedBox(height: 15.0),//Espacio imaginario entre un widget y otro. en este caso es verticalmente de 15px
+                    nombreSeccion(producto.idseccion),//metodo que define el nombre de la seccion
+                    SizedBox(height: 5.0),//Espacio imaginario entre un widget y otro. en este caso es verticalmente de 5px
                     Text('2AN1: Arrendadora  ${producto.arrendador}', style: color),//Texto en pantalla con datos del producto
                     Text('2AN2: Servicio Liviano  ${producto.servicioliviano}', style: color),//Texto en pantalla con datos del producto
                     Text('2AN3 Servicio Pesado  ${producto.serviciopesado}', style: color),//Texto en pantalla con datos del producto
-                    SizedBox(height: 10.0),
-                    Text('Numero de parte: ${producto.nParte}', style: TextStyle(color: Colors.red)),
-                    SizedBox(height: 20.0),
+                    SizedBox(height: 10.0),//Espacio imaginario entre un widget y otro. en este caso es verticalmente de 10px
+                    Text('Numero de parte: ${producto.nParte}', style: TextStyle(color: Colors.red)),//Texto en pantalla
+                    SizedBox(height: 20.0),//Espacio imaginario entre un widget y otro. en este caso es verticalmente de 20px
                   ],
                 ),
               );
@@ -85,24 +85,24 @@ class DataProd extends SearchDelegate { // creamos una clase para manejar el bus
 
   }
   
-  Widget nombreSeccion(int id) {
+  Widget nombreSeccion(int id) {//metodo que define el nombre del widget
 
-  return FutureBuilder(
-    future: seccionProvider.buscarSeccion(id),
-    builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+  return FutureBuilder( // widget para ir mostrando las sugerencias
+    future: seccionProvider.buscarSeccion(id),// definimos el future que leeremos y le mandamos el id como parametro
+    builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {// el builder es el encargado de dibujar lo que deseamos. recibe dos variables, el context y una que por defecto se llama "snapshot" y tendra toda la informacion del stream
       
-      if(snapshot.hasData) {
-      final secciones = snapshot.data;
+      if(snapshot.hasData) {//si el snapshot tiene informacion
+      final secciones = snapshot.data;//guardamos la informacion en la variable secciones
 
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      return Row(//regresamos un widget de tipo fila
+        mainAxisAlignment: MainAxisAlignment.center, //ordenamos los widget de una forma determinada
         children: [
-          Text('Seccion: ', style: TextStyle(fontSize: 16.0, color: Colors.black)),
-          secciones,
+          Text('Seccion: ', style: TextStyle(fontSize: 16.0, color: Colors.black)),//texto en pantalla
+          secciones, //Widget que traemos del future
         ],
       );
       } else {
-        return Text('Cargando...');
+        return Text('Cargando...');//texto en pantalla si el snapshot no tiene informacion
       }
     }
   );

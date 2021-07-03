@@ -23,10 +23,10 @@ class ProductoBloc {
   //Stream => un stream es un "flujo" o "rio" de informacion en el cual se puede ir agregando datos y estos se iran reflejando en pantalla.
   //los dos stream creados (productoStream y cargandoStream) escuchan informacion del mismo lugar. _productoController.stream;
 
-  Future stockCritico(String bodega) async {
+  Future stockCritico(String bodega) async {//metodo para trabajar el stock critico
 
-    final productos = await _productoProvider.stockCritico(bodega);
-    _stockCriticoController.sink.add(productos);
+    final productos = await _productoProvider.stockCritico(bodega);//ejecutamos el metodo stock critico y su respuesta la guardamos en la variable "productos"
+    _stockCriticoController.sink.add(productos); //añadimos al Stream la variable "productos"
   }
 
   Future cargarProducto(int idseccion) async { //creamos un metodo para cargar productos, debe recibir el id de la seccion para solo cargar productos asociados a esa seccion

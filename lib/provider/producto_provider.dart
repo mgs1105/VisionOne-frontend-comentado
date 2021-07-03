@@ -38,16 +38,16 @@ class ProductoProvider{
     if(decodeData == null) return null;  //condicion: si lo recibido del json (decodeData) es nulla, el metodo regresa nulo. si tiene informacion continua con el code
     //recorremos toda la informacion del "decodeData" y cada producto es almacenado en la variable "value".
     decodeData.forEach((value) {
-      //creamos una variable que tendra toda la informacion de cada producto encontrado.
-      final producto = ProductoModel.fromJson(value);
+    
+      final producto = ProductoModel.fromJson(value);//creamos una variable que tendra toda la informacion de cada producto encontrado.
       if(idseccion == producto.idseccion) //condicion: si el idseccion que se recibio en el metodo es igual al idseccion que tiene el producto
       lista.add(producto);  //si son el mismo id, añade el producto a la lista creada.
 
     });
     return lista;  //regresa la lista con toda la informacion.
   }
-  //Creamos un metodo void.El metodo recibe un producto para su creacion.
-  void crearProducto(ProductoModel producto) async {
+
+  void crearProducto(ProductoModel producto) async {  //Creamos un metodo void.El metodo recibe un producto para su creacion
     //creamos una variable que tendra todo el url donde hacer la peticion
     final url = '$_dominio/producto';
     //para crear el producto debemos mandar mas contenido en la peticion.
@@ -57,8 +57,8 @@ class ProductoProvider{
     //para crear el producto y guardarlo en la base de datos.
     await http.post(Uri.parse(url), headers: header, body: productoModelToJson(producto));
   }
-  //creamos un metodo de tipo Future para modificar el producto
-  void modificarProducto(ProductoModel producto) async {
+
+  void modificarProducto(ProductoModel producto) async {  //creamos un metodo de tipo Future para modificar el producto
     //recibimos el Id del producto para poder espeficiar que producto queremos modificar
     final id = producto.id;
     //creamos una variable que tendra todo el url donde realizar la peticion
@@ -70,7 +70,7 @@ class ProductoProvider{
 
   }
 
-  void eliminarProducto(ProductoModel producto) async {
+  void eliminarProducto(ProductoModel producto) async {//creamos un metodo void. el metodo recibe un producto para la eliminacion
     //recibimos el Id del producto para poder espeficiar que producto queremos eliminar
     final id = producto.id;
     //creamos una variable que tendra todo el url donde realizar la peticion    
@@ -137,59 +137,62 @@ class ProductoProvider{
 
   }
 
-  Future<List<ProductoModel>> stockCritico(String bodega) async {
+  Future<List<ProductoModel>> stockCritico(String bodega) async { // metodo para definir el stock critico de los productos
+  //recibe un string "bodega". este String hace referencia a la bodega que el usuario con rol BODEGUERO administra.
 
-    final url = '$_dominio/producto';
-    final resp = await http.get(Uri.parse(url));
-    final data = json.decode(resp.body);
+    final url = '$_dominio/producto';//creamos una variable que tendra todo el url donde hacer la peticion
+    final resp = await http.get(Uri.parse(url));  //creamos una variable que ESPERARA(await) la respuesta de la peticion. En la funcion get debemos mandar un Uri (Uniform Resource Locator)
+    //(Localizador de recursos uniforme). la variable "url" al no ser un Uri debemos "parsearlo" usando el ".parse". 
+    // parsear: Proceso de analizar una secuencia de símbolos a fin de determinar su estructura gramatical definida
+    final data = json.decode(resp.body);//creamos una variable que tendra la informacion de la peticion. esta informacion sera en un formato json
 
-    final List<ProductoModel> lista = [];
+    final List<ProductoModel> lista = [];//una variable de tipo lista de productos.
 
-    if(data == null) return [];
-    
-    data.forEach((value) {
+    if(data == null) return [];//condicion: si lo recibido del json (data) es nulla, el metodo regresa una lista vacia. si tiene informacion continua con el code
+
+    data.forEach((value) {//recorremos toda la informacion del "data" y cada producto es almacenado en la variable "value".
       
-      if(bodega == null) {
+      if(bodega == null) { //si no se recibe nada, quiere decir el rol del usuario es "ADMIN", por ende, puede ver todos los productos de todas las bodegas.
 
-      final producto = ProductoModel.jsonBodegaA(value);
-      final productoB = ProductoModel.jsonBodegaB(value);
-      final productoC = ProductoModel.jsonBodegaC(value);
+      final producto = ProductoModel.jsonBodegaA(value);//creamos una variable que tendra una parte de la informacion encontrada del poducto.
+      final productoB = ProductoModel.jsonBodegaB(value);//creamos una variable que tendra una parte de la informacion encontrada del poducto.
+      final productoC = ProductoModel.jsonBodegaC(value);//creamos una variable que tendra una parte de la informacion encontrada del poducto.
 
-      producto.diferencia = producto.arrendador - producto.stockCritico;
-      productoB.diferencia = productoB.servicioliviano - productoB.stockCritico;
-      productoC.diferencia = productoC.serviciopesado - productoC.stockCritico;
+      producto.diferencia = producto.arrendador - producto.stockCritico; //le damos valor al atributo "diferencia" del objeto credado, llamado "producto"
+      productoB.diferencia = productoB.servicioliviano - productoB.stockCritico;//le damos valor al atributo "diferencia" del objeto credado, llamado "productoB"
+      productoC.diferencia = productoC.serviciopesado - productoC.stockCritico;//le damos valor al atributo "diferencia" del objeto credado, llamadao "productoC"
 
-      lista.add(producto);
-      lista.add(productoB);
-      lista.add(productoC);
-      } else {
+      lista.add(producto); // añadimos a la lista el objeto "producto"
+      lista.add(productoB);// añadimos a la lista el objeto "productoB"    
+      lista.add(productoC);// añadimos a la lista el objeto "productoC"
+      } else { // si el String "bodega" es distinto que null, quiere decir que el rol es "BODEGUERO" y que solo necesita la informacion de los productos de su bodega
 
-        if(bodega == "Arrendador") {
-          final producto = ProductoModel.jsonBodegaA(value);
-          producto.diferencia = producto.arrendador - producto.stockCritico;
-          lista.add(producto);
+        if(bodega == "Arrendador") { // si el string recibido es "Arrendador"
+          final producto = ProductoModel.jsonBodegaA(value); // creamos una variable llamada "producto" y le guardamos la respuesta del metodo "jsonBodegaA".
+          producto.diferencia = producto.arrendador - producto.stockCritico;//le damos valor al atributo "diferencia" del objeto credado, llamado "producto"
+          lista.add(producto); //añadimos el objeto producto a la lista
         }
 
-        if(bodega == "ServicioLiviano") {
-          final producto = ProductoModel.jsonBodegaB(value);
-          producto.diferencia = producto.servicioliviano - producto.stockCritico;
-          lista.add(producto);          
+        if(bodega == "ServicioLiviano") {// si el string recibido es "ServicioLiviano"
+          final producto = ProductoModel.jsonBodegaB(value); // creamos una variable llamada "producto" y le guardamos la respuesta del metodo "jsonBodegaB".
+          producto.diferencia = producto.servicioliviano - producto.stockCritico;//le damos valor al atributo "diferencia" del objeto credado, llamado "producto"
+          lista.add(producto);//añadimos el objeto producto a la lista        
         }
 
-        if(bodega == "ServicioPesado") {
-          final producto = ProductoModel.jsonBodegaC(value);
-          producto.diferencia = producto.serviciopesado - producto.stockCritico;
-          lista.add(producto);          
+        if(bodega == "ServicioPesado") {// si el string recibido es "ServicioPesado"
+          final producto = ProductoModel.jsonBodegaC(value); // creamos una variable llamada "producto" y le guardamos la respuesta del metodo "jsonBodegaC".
+          producto.diferencia = producto.serviciopesado - producto.stockCritico;//le damos valor al atributo "diferencia" del objeto credado, llamado "producto"
+          lista.add(producto);//añadimos el objeto producto a la lista         
         }            
       }
 
     });
 
-    lista.sort((a,b){
-      return a.diferencia - b.diferencia;
+    lista.sort((a,b){ // ejecutamos el metodo "sort" a la lista para ordenarla de una forma especial
+      return a.diferencia - b.diferencia; //el metodo sort captura la variable "diferencia" de cada producto de la lista, y ordena los objetos desde el el producto que tenga la "diferencia" menor a la mayor.
     });
 
-    return lista;
+    return lista;//regresa la lista ordenada
   }
 }
 

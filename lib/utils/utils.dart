@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vision_one/modelo/bodega_model.dart';
+//import 'package:vision_one/modelo/bodega_model.dart';
 
 //DropdownMenuItem => similar al combobox de html. lo definimos como una lista de String.
 List<DropdownMenuItem<String>> opcionesRol(List roles) { //el metodo debe recibir la lista de roles
@@ -46,16 +46,16 @@ Widget boton(String rol, BuildContext context) { //definimos un metodo llamado b
 
 }
 
-List<DropdownMenuItem<String>> opcionesBodega(List bodegas) {
+List<DropdownMenuItem<String>> opcionesBodega(List bodegas) {//el metodo debe recibir la lista de bodegas
 
-  List<DropdownMenuItem<String>> listabodegas = []; 
+  List<DropdownMenuItem<String>> listabodegas = []; //creamos lista vacia de tipo DropDownMenuItem
 
-  for(String bodega in bodegas) {
-    listabodegas.add(DropdownMenuItem(
+  for(String bodega in bodegas) {//recorremos la lista recibida en el metodo llamada "bodegas", con un string llamado "bodega"
+    listabodegas.add(DropdownMenuItem( //le añadimos a la lista creada anteriormente un DropdownMenuItem donde su texto visible sera la bodega
       child: Text(bodega),
       value: bodega,
     ));
   }
-
+//asi continuamos con el ciclo for y vamos llenando la lista con opciones. luego regresamos la lista con las opciones encontradas de bodegas.
   return listabodegas;
 }

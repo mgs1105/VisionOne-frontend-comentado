@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vision_one/bloc/usuario_bloc.dart';
-import 'package:vision_one/modelo/bodega_model.dart';
+
 import 'package:vision_one/modelo/usuario_model.dart';
 import 'package:vision_one/provider/bodega_provider.dart';
 import 'package:vision_one/provider/usuario_provider.dart';
@@ -74,10 +74,10 @@ class _CrearUsuarioPageState extends State<CrearUsuarioPage> {
         SizedBox(height: tamano.height * 0.03), //Espacio en blanco entre un widget y otro, en este caso es un espacio vertical al definir la propiedad height. ocupara el 3%
         _rol(tamano),// metodo que define la creacion del input del rol
         SizedBox(height: tamano.height * 0.1), //Espacio en blanco entre un widget y otro, en este caso es un espacio vertical al definir la propiedad height. ocupara el 10%
-        Text('Bodega', style: fuente),
-        Text('*solo si el rol es bodeguero*', style: TextStyle(fontSize: 14.0)),
-        SizedBox(height: tamano.height * 0.03),
-        _bodega(tamano),
+        Text('Bodega', style: fuente),//Texto desplegado en pantalla
+        Text('*solo si el rol es bodeguero*', style: TextStyle(fontSize: 14.0)),//Texto desplegado en pantalla
+        SizedBox(height: tamano.height * 0.03),//Espacio en blanco entre un widget y otro, en este caso es un espacio vertical al definir la propiedad height. ocupara el 3%
+        _bodega(tamano),//metodo que define el input para las bodegas
         SizedBox(height: tamano.height * 0.1), //Espacio en blanco entre un widget y otro, en este caso es un espacio vertical al definir la propiedad height. ocupara el 10%
         _boton(tamano)
       ],
@@ -147,30 +147,30 @@ class _CrearUsuarioPageState extends State<CrearUsuarioPage> {
 
   }
 
-  Widget _bodega(Size tamano) {
+  Widget _bodega(Size tamano) {//metodo donde se crea el input de bodegas.
 
-    String _bodega;
+    String _bodega;//creamos una variable String
 
-    return FutureBuilder(
-      future: bodegaProvider.cargarBodega(),
-      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+    return FutureBuilder(//Widget para cargar datos y poder usarlos en la construccion de la vista
+      future: bodegaProvider.cargarBodega(),//metodo que se cargara
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {//propiedad que recibe el context para dibujar los widget en pantalla y la propiedad snapshot que tiene la informacion del metodo ejecutado en el Future
         
-        if(snapshot.hasData) {
+        if(snapshot.hasData) {//si el snapshot tiene informacion
 
-        final bodegas = snapshot.data;
+        final bodegas = snapshot.data;//guarda la informacion en la variable "bodegas"
 
-        return Container(
-          width: tamano.width *0.7,
-            child: DropdownButtonFormField(
-              value: '${bodegas[0]}',
-              items: utils.opcionesBodega(bodegas),
-              onChanged: (opt) {
-                setState(() {
-                  _bodega = opt;
+        return Container( //regresa un contenedor
+          width: tamano.width *0.7,//usara el 70% de la pantalla a lo ancho
+            child: DropdownButtonFormField(//hijo del contenedor que sera el input tipo ComboBox
+              value: '${bodegas[0]}',//valor iniciar del input
+              items: utils.opcionesBodega(bodegas),//resto de la lista que tendra el input
+              onChanged: (opt) {//propiedad que va cambiando la opcion elegida
+                setState(() {//metodo que actualiza la pagina cuando ve un cambio
+                  _bodega = opt;//igualamos la opcion elegida.
                 });
               },
-              onSaved: (opt) {
-                usuarioModel.bodega = opt;
+              onSaved: (opt) {//propiedad para guardar la opcion elegida
+                usuarioModel.bodega = opt; //le añadimos el valor elegido a la propiedad del usuarioModel
               },
             ),
         );

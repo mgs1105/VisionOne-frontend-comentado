@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 //Importamos las paginas que tendra nuestra aplicacion
 import 'package:vision_one/paginas/iniciar_sesion.dart';
 import 'package:vision_one/paginas/home.dart';
-import 'package:vision_one/paginas/crear_bodega.dart';
 import 'package:vision_one/paginas/crear_usuario.dart';
 import 'package:vision_one/paginas/admin_usuarios.dart';
 import 'package:vision_one/paginas/admin_seccion.dart';
@@ -44,7 +43,6 @@ class MyApp extends StatelessWidget {
         'home'          : (BuildContext context) => HomePage(),
         'lista_users'   : (BuildContext context) => ListaUserPage(),
         'stock_critico' : (BuildContext context) => StockCriticoPage(),
-        'crear_bodega'  : (BuildContext context) => CrearBodegaPage(),
         'admin_users'   : (BuildContext context) => AdminUsuarioPage(),
         'crear_users'   : (BuildContext context) => CrearUsuarioPage(),
         'admin_seccion' : (BuildContext context) => AdminSeccionPage(),

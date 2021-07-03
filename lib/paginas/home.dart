@@ -46,30 +46,30 @@ class _HomePageState extends State<HomePage> {
     );
   }
   
-  Widget _menuLateral(BuildContext context, UsuarioModel usuario) {
+  Widget _menuLateral(BuildContext context, UsuarioModel usuario) {//metodo que dibujara el menu lateral del home
     
-    final tamano = TextStyle(fontSize: 15.0);
+    final tamano = TextStyle(fontSize: 15.0);//variable creada con propiedades de TextStyle
 
-      return Drawer(
-        child: SingleChildScrollView(
-          child: Column(
+      return Drawer( //Widget que tiene la propiedad del menu lateral
+        child: SingleChildScrollView(//hijo del menu lateral, un Widget para hacer scroll
+          child: Column(//hijo del Widget hijo. para ordenar elementos de forma vertical
             children: [
-              DrawerHeader(
-                child: Container(),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage('imagenes/salfa.png')
+              DrawerHeader(//Cabeza del menu lateral
+                child: Container(),//contenedor vacio
+                decoration: BoxDecoration( //propiedad para decorar la cabecera
+                  image: DecorationImage(//Widget para definir una imagen
+                    fit: BoxFit.cover,//propiedad para ajustar la imagen en distintos tamaños
+                    image: AssetImage('imagenes/salfa.png') //cargamos la imagen.
                   )
                 )
               ),
-              Text('Menu', style: TextStyle(fontSize: 20.0)),
-              SizedBox(height: 30.0),
-              _adminusuario(usuario, tamano),
-              _stockCritico(usuario, tamano),
-              ListTile(
-                title: Text('Cerrar sesion', style: tamano),
-                onTap: () => Navigator.pushReplacementNamed(context, 'iniciarSesion')
+              Text('Menu', style: TextStyle(fontSize: 20.0)),//Texto definido en pantalla
+              SizedBox(height: 30.0),//espacio imaginario entre dos widget de forma vertical. usa 30px
+              _adminusuario(usuario, tamano),//metodo para definir el boton de administrar usuario
+              _stockCritico(usuario, tamano),//metodo para definir el boton de stock critico
+              ListTile(//Widget para definir un elemento en formato de lista
+                title: Text('Cerrar sesion', style: tamano),//Texto dado al formato lista
+                onTap: () => Navigator.pushReplacementNamed(context, 'iniciarSesion')//funcion que hara la lista al ser presionada
               ), 
             ],
           ),
@@ -78,26 +78,26 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  Widget _adminusuario(UsuarioModel usuario, TextStyle tamano) {
+  Widget _adminusuario(UsuarioModel usuario, TextStyle tamano) {//metodo para definir un elemento de la lista
 
-    if(usuario.rol == "ADMIN") {
-      return ListTile(
-        title: Text('Administrar usuario', style: tamano),
-        onTap: () => Navigator.pushNamed(context, 'lista_users'),
+    if(usuario.rol == "ADMIN") {//si el rol del usuario es ADMIN
+      return ListTile(//Widget para definir un elemento en formato de lista
+        title: Text('Administrar usuario', style: tamano),//Texto dado al formato lista
+        onTap: () => Navigator.pushNamed(context, 'lista_users'),//funcion que hara la lista al ser presionada
       );
-    } else {
+    } else { //si el rol no es administrador devuelve un contenedor vacio
       return Container();
     }
   }
 
-  Widget _stockCritico(UsuarioModel usuario, TextStyle tamano) {
+  Widget _stockCritico(UsuarioModel usuario, TextStyle tamano) {//metodo para definir un elemento de la lista
 
-    if(usuario.rol == "ADMIN" || usuario.rol == "BODEGUERO") {
-      return ListTile(
-        title: Text('Stock Critico', style: tamano),
-        onTap: () => Navigator.pushNamed(context, 'stock_critico', arguments: usuario),
+    if(usuario.rol == "ADMIN" || usuario.rol == "BODEGUERO") {//si el rol del usuario es ADMIN o BODEGUERO
+      return ListTile(//Widget para definir un elemento en formato de lista
+        title: Text('Stock Critico', style: tamano),//Texto dado al formato lista
+        onTap: () => Navigator.pushNamed(context, 'stock_critico', arguments: usuario),//funcion que hara la lista al ser presionada
       );
-    } else {
+    } else {//si el rol no es ADMIN ni BODEGUERO devuelve un contenedor vacio
       return Container();
     }
 

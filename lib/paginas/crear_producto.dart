@@ -65,10 +65,10 @@ class _CrearProdPageState extends State<CrearProdPage> {
         SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
         _stockC(tamano),//metodo para definir el input del stockC
         SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
-        _stockCritico(tamano),
+        _stockCritico(tamano),//meetodo para definir el input del stock critico del producto
         SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
-        _numeroParte(tamano),
-        SizedBox(height: tamano.height * 0.05),
+        _numeroParte(tamano), //metodo para definir el input del numero de parte del producto
+        SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
         _boton(),//metodo para definir el boton agregar
         SizedBox(height: tamano.height * 0.05),//espacio imaginario entre un widget y otro, en este caso, espacio de 5% de alto
       ]
@@ -132,14 +132,14 @@ class _CrearProdPageState extends State<CrearProdPage> {
       width: tamano.width * 0.7, //espacio maximo que ocupara de ancho el contenedor. 70%  
       child: TextFormField(// widget para crear el input del rut
         keyboardType: TextInputType.number, // al presionar el input el se abre el teclado de numeros
-        textCapitalization: TextCapitalization.sentences, 
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration( // decoracion del input
           labelText: 'Stock en sucursal Arrendador' // texto de ayuda.
         ),
         validator: (value) { // validacion del completado de campos
 
-          if(value.length <= 0) { // si el campo esta vacio lanza el siguiente error debajo del input
-            return 'Debe especificar la cantidad en bodega';
+          if(value.length <= 0 || int.parse(value) < 0) { // si el campo esta vacio o el valor es negativo lanza el siguiente error debajo del input
+            return 'Debe ingresar un valor valido';
           } else {
             return null;
           }
@@ -161,8 +161,8 @@ class _CrearProdPageState extends State<CrearProdPage> {
           labelText: 'Stock en sucursal Servicio liviano' // texto de ayuda.
         ),
         validator: (value) {// validacion del completado de campos
-          if(value.length <= 0) {// si el campo esta vacio lanza el siguiente error debajo del input
-            return 'Debe especificar la cantidad en bodega';
+          if(value.length <= 0 || int.parse(value) < 0) {// si el campo esta vacio o el valor es menor a 0 lanza el siguiente error debajo del input
+            return 'Debe ingresar un valor valido';
           } else {
             return null;
           }
@@ -184,8 +184,8 @@ class _CrearProdPageState extends State<CrearProdPage> {
           labelText: 'Stock en sucursal Servicio pesado' // texto de ayuda.
         ),
         validator: (value) {// validacion del completado de campos
-          if(value.length <= 0) {// si el campo esta vacio lanza el siguiente error debajo del input
-            return 'Debe especificar la cantidad en bodega';
+          if(value.length <= 0 || int.parse(value) < 0) {// si el campo esta vacio o el valor es menor a 0 lanza el siguiente error debajo del input
+            return 'Debe ingresar un valor valido';
           } else {
             return null;
           }
@@ -207,8 +207,8 @@ class _CrearProdPageState extends State<CrearProdPage> {
           labelText: 'Stock Critico del producto' // texto de ayuda.
         ),
         validator: (value) {// validacion del completado de campos
-          if(value.length <= 0) {// si el campo esta vacio lanza el siguiente error debajo del input
-            return 'Debe especificar el stock critico del producto';
+          if(value.length <= 0 || int.parse(value) < 0) {// si el campo esta vacio o el valor es menor a 0 lanza el siguiente error debajo del input
+            return 'Debe ingresar un valor valido';
           } else {
             return null;
           }
@@ -230,7 +230,7 @@ class _CrearProdPageState extends State<CrearProdPage> {
           labelText: 'Numero de parte' // texto de ayuda.
         ),
         validator: (value) {// validacion del completado de campos
-          if(value.length != 10) {// si el campo esta vacio lanza el siguiente error debajo del input
+          if(value.length != 10) {// si la cantidad de caracteres es distinto a 10 lanza el siguiente error debajo del input
             return 'El numero de parte debe ser de 10 caracteres';
           } else {
             return null;

@@ -29,7 +29,7 @@ class SeccionProvider {
     //creamos una variable que tendra la informacion de la peticion. esta informacion sera en un formato json    
     final decodeData = json.decode(resp.body);
 
-    final List<SeccionModel> lista = [];     //una variable de tipo lista de secciones.
+    final List<SeccionModel> lista = [];//una variable de tipo lista de secciones.
 
     if(decodeData == null) return []; //condicion: si lo recibido del json (decodeData) es nulla, el metodo regresa nulo. si tiene informacion continua con el code
 

@@ -58,7 +58,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
     final color = TextStyle(color: Colors.white); //creamos una variable llamda color que tendra propiedades de un TextStyle
     SeccionModel seccion = new SeccionModel(); // creamos una nueva instancia de la clase seccionModel
 
-    seccion.id = producto.idseccion; 
+    seccion.id = producto.idseccion;// igualamos la seccion del id con el "idseccion" de producto
 
     showDialog( // metodo que prepara la pantalla para disparar una alerta
       context: context,//tiene el contexto de lo necesario para disparar dicha alerta
@@ -167,7 +167,7 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
       border: const OutlineInputBorder()
     );
 
-    if(usuario.rol == "ADMIN") {
+    if(usuario.rol == "ADMIN") { // si el rol del usuario es "ADMIN" hara lo siguiente...
 
     return Form( //return del metodo. Un formulario
       key: keyformulario, // especificamos la llave que tendra el formulario. esta llave se usa despues para validar el estado del formulario
@@ -183,8 +183,8 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                   initialValue: producto.arrendador.toString(), //cargas el stock del producto convertido de un entero a un String 
                   decoration: decoracion, //decoracion que se le da al input 
                   validator: (value) {//validacion del input
-                    if(value.length <= 0) { //si no se a tipeado nada mandara el siguiente error 
-                      return 'Debe especificar la cantidad'; //ERROR: aparecera debajo del input con color rojo
+                    if(value.length <= 0 || int.parse(value) < 0) { //si no se a tipeado nada o el valor es menor a 0 mandara el siguiente error 
+                      return 'Debe ingresar un valor valido'; //ERROR: aparecera debajo del input con color rojo
                     } else {
                       return null;
                     }
@@ -204,8 +204,8 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                   initialValue: producto.servicioliviano.toString(),//cargas el stock del producto convertido de un entero a un String 
                   decoration: decoracion, //decoracion que se le da al input 
                   validator: (value) {//validacion del input
-                    if(value.length <= 0) { //si no se a tipeado nada mandara el siguiente error 
-                      return 'Debe especificar la cantidad';//ERROR: aparecera debajo del input con color rojo
+                    if(value.length <= 0 || int.parse(value) < 0) { //si no se a tipeado o el valor es menor a 0 nada mandara el siguiente error 
+                      return 'Debe ingresar un valor valido';//ERROR: aparecera debajo del input con color rojo
                     } else {
                       return null;
                     }
@@ -225,8 +225,8 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                   initialValue: producto.serviciopesado.toString(),//cargas el stock del producto convertido de un entero a un String 
                   decoration: decoracion,//decoracion que se le da al input
                   validator: (value) {//validacion del input
-                    if(value.length <= 0) {//si no se a tipeado nada mandara el siguiente error 
-                      return 'Debe especificar la cantidad';//ERROR: aparecera debajo del input con color rojo
+                    if(value.length <= 0 || int.parse(value) < 0) {//si no se a tipeado nada o el valor es menor a 0 mandara el siguiente error 
+                      return 'Debe ingresar un valor valido';//ERROR: aparecera debajo del input con color rojo
                     } else {
                       return null;
                     }
@@ -240,16 +240,16 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
       ),
     );
 
-    } else {
+    } else {// si el rol del usuario NO es "ADMIN", obviamente sera "BODDEGUERO", ahora buscamos a que bodega pertenece...
 
-      if(usuario.bodega == "Arrendador") {
-        return formulario(usuario.bodega, producto.arrendador, producto);
+      if(usuario.bodega == "Arrendador") {  //si la bodega es "Arrendador"
+        return formulario(usuario.bodega, producto.arrendador, producto);// ejecuta el metodo "formulario" mandando los datos de esa bodega
       }
-      if(usuario.bodega == "ServicioLiviano") {
-        return formulario(usuario.bodega, producto.servicioliviano, producto);
+      if(usuario.bodega == "ServicioLiviano") { //si la bodega es "ServicioLiviano"
+        return formulario(usuario.bodega, producto.servicioliviano, producto);// ejecuta el metodo "formulario" mandando los datos de esa bodega
       }
-      if(usuario.bodega == "ServicioPesado") {
-        return formulario(usuario.bodega, producto.serviciopesado, producto);
+      if(usuario.bodega == "ServicioPesado") { //si la bodega es "ServicioPesado"
+        return formulario(usuario.bodega, producto.serviciopesado, producto);// ejecuta el metodo "formulario" mandando los datos de esa bodega
       }
 
     }
@@ -263,13 +263,13 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
       border: const OutlineInputBorder()
     );
 
-    return Form(
-      key: keyformulario,
-      child: Table(
-        children: [
-          TableRow(
-            children: [
-              _sucursal(bodega),
+    return Form( //retorna un Widget formulario
+      key: keyformulario, // definimos la llave del formulario, con ella podremos validar el form.
+      child: Table( //Widget que crea una tabla
+        children: [ //propiedad del Widget Table
+          TableRow(// primera fila de la tabla 
+            children: [//hijos de la primera fila
+              _sucursal(bodega),//metodo que creara el texto con el nombre de la sucursal
               Container(// segundo elemento de la tercera fila
                 margin: EdgeInsets.only(right: 12.0, bottom: 10.0),//Margen que se le dara al contenedor a la derecha y arriba
                 child: TextFormField(// el hijo del widget Container sera un TextFromField que tiene las propiedades de un input para escribir en el
@@ -277,16 +277,16 @@ class _ProdDetallePageState extends State<ProdDetallePage> {
                   initialValue: stock.toString(),//cargas el stock del producto convertido de un entero a un String 
                   decoration: decoracion,//decoracion que se le da al input
                   validator: (value) {//validacion del input
-                    if(value.length <= 0) {//si no se a tipeado nada mandara el siguiente error 
-                      return 'Debe especificar la cantidad';//ERROR: aparecera debajo del input con color rojo
+                    if(value.length <= 0 || int.parse(value) < 0) {//si no se a tipeado nada mandara el siguiente error 
+                      return 'Debe ingresar un valor valido';//ERROR: aparecera debajo del input con color rojo
                     } else {
                       return null;
                     }
                   },
                   onSaved: (value) => {
-                    if(bodega == "Arrendador") producto.arrendador = int.parse(value),//guardamos la cantidad especifica en el producto.StockC
-                    if(bodega == "ServicioLiviano") producto.servicioliviano = int.parse(value),
-                    if(bodega == "ServicioPesado") producto.serviciopesado = int.parse(value)
+                    if(bodega == "Arrendador") producto.arrendador = int.parse(value),//guardamos la cantidad especifica en el producto.Arrendador
+                    if(bodega == "ServicioLiviano") producto.servicioliviano = int.parse(value),//guardamos la cantidad especifica en el producto.ServicioLiviano
+                    if(bodega == "ServicioPesado") producto.serviciopesado = int.parse(value)//guardamos la cantidad especifica en el producto.ServicioPesado
                   }
                 ),
               ),
